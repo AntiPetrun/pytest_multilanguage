@@ -8,4 +8,5 @@ def test_button_add_to_basket(browser):
     time.sleep(30)
     button = browser.find_element(By.CSS_SELECTOR, 'button.btn-add-to-basket')
     assert button.get_attribute('value') == button.text, 'Button attribute doesn\'t match value'
+    assert button, 'Button doesn\'t exist'
     button.click()
