@@ -5,10 +5,6 @@ from selenium.webdriver.firefox.service import Service
 from subprocess import getoutput
 from selenium.webdriver.chrome.options import Options as OptionsChrome
 
-# this code for running snap Firefox, cos I use Ubuntu snap store!!!
-options = Options()
-options.binary_location = getoutput("find /snap/firefox -name firefox").split("\n")[-1]
-
 
 def pytest_addoption(parser):
     parser.addoption('--browser_name', action='store', default='chrome',
@@ -24,10 +20,13 @@ def browser(request):
     browser = None
     if browser_name == "chrome":
         print("\nstart chrome browser for test..")
-        options_chrome = OptionsChrome()
-        options_chrome.add_experimental_option('prefs', {'intl.accept_languages': language})
-        browser = webdriver.Chrome(options=options_chrome)
+        options = OptionsChrome()
+        options.add_experimental_option('prefs', {'intl.accept_languages': language})
+        browser = webdriver.Chrome(options=options)
     elif browser_name == "firefox":
+        options = Options()
+        options.binary_location = getoutput("find /snap/firefox -name firefox").split("\n")[-1]
+        options.set_preference("intl.accept_languages", language)
         print("\nstart firefox browser for test..")
         browser = webdriver.Firefox(service=Service(
             executable_path=getoutput(
